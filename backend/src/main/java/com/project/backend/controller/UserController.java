@@ -21,8 +21,16 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<String> addUser(@RequestBody User user) {
+        if(userService.isEmailTaken(user.getEmail())){
+            return new ResponseEntity<>("EMAIL", HttpStatus.BAD_REQUEST);
+        }
+
+        if(userService.isPhoneTaken(user.getPhone())){
+            return new ResponseEntity<>("PHONE", HttpStatus.BAD_REQUEST);
+        }
+
         User NewUser = userService.newUser(user);
-        return new ResponseEntity<>(NewUser, HttpStatus.CREATED);
+        return new ResponseEntity<>("User Created Successfully", HttpStatus.CREATED);
     }
 }

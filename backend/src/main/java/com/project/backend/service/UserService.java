@@ -19,4 +19,12 @@ public class UserService {
         user.setPassword(passwordEncoded);
         return userRepository.save(user);
     }
+
+    public boolean isEmailTaken(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean isPhoneTaken(String phone) {
+        return userRepository.findByPhone(phone).isPresent();
+    }
 }

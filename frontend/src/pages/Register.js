@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
-import { Bounce, ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Register() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -24,7 +24,7 @@ function Register() {
     phone: "",
     password: "",
     confirm: "",
-    userType : "Customer",
+    userType: "Customer",
   };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
@@ -39,7 +39,6 @@ function Register() {
     const errors = validate(formValues);
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
-      
       const { confirm, ...valuesToSubmit } = formValues;
       console.log(valuesToSubmit);
       axios
@@ -49,7 +48,25 @@ function Register() {
           setFormValues(initialValues);
         })
         .catch((error) => {
-       toast.error("An error occured");
+          if (error.response && error.response.data) {
+            if (error.response.data === "EMAIL") {
+              setFormErrors({
+                ...errors,
+                email: "Email is already registered",
+              });
+              setFormValues({ ...formValues, email: "" });
+            }
+
+            if (error.response.data === "PHONE") {
+              setFormErrors({
+                ...errors,
+                phone: "Phone number is already using with another account",
+              });
+              setFormValues({ ...formValues, phone: "" });
+            }
+          } else {
+            toast.error("An error occured");
+          }
         });
     }
   };
@@ -88,7 +105,6 @@ function Register() {
 
   return (
     <div className="container">
-  
       <h1>Register</h1>
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6 col-xl-6">
@@ -196,17 +212,17 @@ function Register() {
         </div>
       </div>
       <ToastContainer
-      position="top-center"
-      autoClose={1000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-      transition={Bounce}
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
       />
     </div>
   );
