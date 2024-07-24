@@ -1,0 +1,64 @@
+/* home.css */
+
+.container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 2% auto;
+  padding: 20px;
+  font-size: 1.2rem;
+}
+
+h1 {
+  margin: 20px 0;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.one,
+.two,
+.three,
+.four,
+.five,
+.six {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.one .photo,
+.two .photo,
+.three .photo,
+.four .photo,
+.five .photo,
+.six .photo,
+.one .content1,
+.two .content2,
+.three .content3,
+.four .content4,
+.five .content5,
+.six .content6 {
+  flex: 1;
+  padding: 10px;
+}
+
+.photo img {
+  width: 100%;
+  height: 350px;
+  border-radius: 10px;
+}
+
+h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+p {
+  margin: 0;
+  color: #555;
+}
