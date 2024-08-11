@@ -1,4 +1,5 @@
 import React from "react";
+import '../styles/App.css';
 import '../styles/home.css';
 import pizza from "../assets/landing.jpg";
 import restaurant from '../assets/restaurant.jpg';
@@ -6,11 +7,20 @@ import waiter from '../assets/waiter.jpeg';
 import dishes from '../assets/dishes.webp';
 import noodle from '../assets/main.jpg';
 import burger from '../assets/bg.jpg';
+import Login from "./Login";
+import Register from "./Register";
+import Navbar from "../components/Navbar";
 
 function Home() {
-
+  const routes = [
+    { path: "/", name: "Home",},
+    { path: "/login", name: "Login", component: Login },
+    { path: "/register", name: "Register", component: Register },
+  ];
   return (
-    <div className="container">
+    <div className="page-content">
+       <Navbar routes={routes} />
+       <div className="home-content">
       <h1>Welcome to ABC Restaurant</h1>
       <div className="one">
         <div className="photo">
@@ -104,6 +114,7 @@ function Home() {
             Sri Lanka’s culinary landscape.
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -1,15 +1,12 @@
 /* home.css */
 
-.container {
-  flex: 1;
+.home-content{
+  width: 90%;
+  margin: 0 auto;
   max-width: 1200px;
-  margin: 2% auto;
-  padding: 20px;
-  font-size: 1.2rem;
 }
-
 h1 {
-  margin: 20px 0;
+  margin: 2rem 0;
   text-align: center;
   font-size: 1.8rem;
   font-weight: 600;

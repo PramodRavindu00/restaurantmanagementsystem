@@ -2,14 +2,17 @@ package com.project.backend.service;
 
 import com.project.backend.model.User;
 import com.project.backend.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -26,5 +29,9 @@ public class UserService {
 
     public boolean isPhoneTaken(String phone) {
         return userRepository.findByPhone(phone).isPresent();
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

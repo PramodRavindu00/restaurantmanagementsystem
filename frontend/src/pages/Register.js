@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import '../styles/App.css';
 import "../styles/form.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Login from "./Login";
+import Home from "./Home";
+import Navbar from "../components/Navbar";
 
 function Register() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -40,9 +43,9 @@ function Register() {
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
       const { confirm, ...valuesToSubmit } = formValues;
-      console.log(valuesToSubmit);
+     // console.log(valuesToSubmit);
       axios
-        .post("/user", valuesToSubmit)
+        .post("/user/register", valuesToSubmit)
         .then((res) => {
           toast.success("user registered successfully");
           setFormValues(initialValues);
@@ -103,11 +106,18 @@ function Register() {
     return errors;
   };
 
+  const routes = [
+    { path: "/", name: "Home", component: Home },
+    { path: "/login", name: "Login", component: Login},
+    { name: "Register" },
+  ];
+
   return (
-    <div className="container">
+    <div className="page-content">
+      <Navbar routes={routes}/>
       <h1>Register</h1>
       <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6 col-xl-6">
+      <div className="col-10 col-sm-8 col-md-6 col-lg-4">
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicFirstName">
               <Form.Label>First Name</Form.Label>
