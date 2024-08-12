@@ -49,13 +49,13 @@ function Login() {
           setFormValues(initialValues);
           setTimeout(() => {
             if (userType === "Admin") {
-              navigate("/admin");
+              navigate("/admin/adminProducts");
             } else if (userType === "Staff") {
-              navigate("/staff");
+              navigate("/staff/ordermanage");
             } else if (userType === "Customer") {
-              navigate("/customer");
+              navigate("/customer/customerProducts");
             }
-          }, 1000);
+          }, 1500);
         })
         .catch((error) => {
           if (error.response) {
@@ -91,7 +91,7 @@ function Login() {
 
   const routes = [
     { path: "/", name: "Home", component: Home },
-    { path: "/", name: "Login",},
+    { name: "Login",},
     { path: "/register", name: "Register", component: Register },
   ];
   return (
@@ -149,7 +149,7 @@ function Login() {
       </div>
       <ToastContainer
         position="top-center"
-        autoClose={1000}
+        autoClose={750}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

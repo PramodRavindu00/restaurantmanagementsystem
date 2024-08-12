@@ -21,8 +21,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests)-> requests
-                        .requestMatchers("/user/login", "/user/register").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
+//                        .requestMatchers("/user/login", "/user/register").permitAll()
+//                        .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement((session) ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(LogoutConfigurer::permitAll);

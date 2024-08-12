@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import '../styles/App.css';
+import React, { useEffect, useState } from "react";
+import "../styles/App.css";
 import "../styles/form.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -11,44 +11,69 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./Login";
 import Home from "./Home";
 import Navbar from "../components/Navbar";
+import Select from "react-select";
 
 function Register() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
-  const toggleConfirmPasswordVisibility = () =>
-    setConfirmPasswordVisible(!confirmPasswordVisible);
+  const toggleConfirmPasswordVisibility = () => setConfirmPasswordVisible(!confirmPasswordVisible);
 
   const initialValues = {
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
+    branch: "",
     password: "",
     confirm: "",
     userType: "Customer",
   };
+  
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [branchOptions, setBranchOptions] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
+  useEffect(() => {
+    axios
+      .get("/branch/activeBranch")
+      .then((response) => {
+        const branches = response.data;
+        const options = branches.map((branch) => ({
+          value: branch.id,
+          label: branch.name,
+        }));
+        setBranchOptions(options);
+      })
+      .catch((error) => {
+        console.error("Error fetching Data");
+      });
+  }, []);
+
+  const handleSelectChange = (selectedOption)=>{
+    setSelectedOption(selectedOption);
+    setFormValues({...formValues,branch:selectedOption.value});
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validate(formValues);
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
       const { confirm, ...valuesToSubmit } = formValues;
-     // console.log(valuesToSubmit);
+      // console.log(valuesToSubmit);
       axios
         .post("/user/register", valuesToSubmit)
         .then((res) => {
           toast.success("user registered successfully");
           setFormValues(initialValues);
+          setSelectedOption(null);
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -91,6 +116,9 @@ function Register() {
     if (!values.phone) {
       errors.phone = "Phone number is required!";
     }
+    if (!values.branch) {
+      errors.branch = "Branch is required!";
+    }
     if (!values.password) {
       errors.password = "Password is required";
     } else if (values.password.length < 4) {
@@ -108,16 +136,16 @@ function Register() {
 
   const routes = [
     { path: "/", name: "Home", component: Home },
-    { path: "/login", name: "Login", component: Login},
+    { path: "/login", name: "Login", component: Login },
     { name: "Register" },
   ];
 
   return (
     <div className="page-content">
-      <Navbar routes={routes}/>
+      <Navbar routes={routes} />
       <h1>Register</h1>
       <div className="row justify-content-center">
-      <div className="col-10 col-sm-8 col-md-6 col-lg-4">
+        <div className="col-10 col-sm-8 col-md-6 col-lg-4">
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicFirstName">
               <Form.Label>First Name</Form.Label>
@@ -165,7 +193,6 @@ function Register() {
               />
               <span className="error-message">{formErrors.phone}</span>
             </Form.Group>
-
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <div className="input-group">
@@ -209,6 +236,17 @@ function Register() {
               </div>
               <span className="error-message">{formErrors.confirm}</span>
             </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicBranch">
+              <Form.Label>Closest Branch</Form.Label>
+              <Select
+                name="branch"
+                options={branchOptions}
+                value={selectedOption}
+                onChange={handleSelectChange}
+                placeholder="Select the branch"
+              />
+              <span className="error-message">{formErrors.branch}</span>
+            </Form.Group>
             <div className="text-center">
               <Button
                 variant="secondary"
@@ -223,7 +261,7 @@ function Register() {
       </div>
       <ToastContainer
         position="top-center"
-        autoClose={1000}
+        autoClose={750}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
