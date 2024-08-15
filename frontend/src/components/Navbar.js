@@ -12,15 +12,20 @@ function Navbar({ routes}) {
   const token = localStorage.getItem('authToken');
 
   const logout = ()=>{
-    Confirm(() => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userType');
     setTimeout(()=>{
       navigate("/login");
     },750)
-   
-  });
   }
+
+  const ShowConfirm = ()=>{
+    Confirm({
+      title:'Confirm Logout',
+      message:'Are you sure you want to log out?',
+      onConfirm:logout,
+    });
+  };
 
   return (
     <nav className="nav">
@@ -41,7 +46,7 @@ function Navbar({ routes}) {
         {/* conditionally rendering the logout button */}
         {token && location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/' &&(
  <li className="nav-item">
- <button onClick= {logout} className="logout" aria-label="Logout" title="Logout"><FontAwesomeIcon icon={faSignOut}/>
+ <button onClick= {ShowConfirm} className="logout" aria-label="Logout" title="Logout"><FontAwesomeIcon icon={faSignOut}/>
    </button>
 </li>
         )}

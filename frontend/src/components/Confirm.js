@@ -1,11 +1,11 @@
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-function Confirm(onConfirm) {
+function Confirm({title,message,onConfirm}) {
   return confirmAlert(
     {
-        title : 'Confirm Logout',
-        message : 'Are you sure you want to log out?',
+        title : title,
+        message : message,
         buttons : [
             {
                 label : 'Yes',

@@ -29,6 +29,7 @@ function Register() {
     password: "",
     confirm: "",
     userType: "Customer",
+    active:true,
   };
   
   const [formValues, setFormValues] = useState(initialValues);

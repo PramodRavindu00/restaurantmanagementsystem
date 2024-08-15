@@ -16,5 +16,6 @@ public class Branch {
     @GeneratedValue
     private Long id;
     private String name;
+    private String location;
     private boolean active;
 }

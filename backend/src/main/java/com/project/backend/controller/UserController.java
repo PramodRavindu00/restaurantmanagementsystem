@@ -2,16 +2,17 @@ package com.project.backend.controller;
 
 import com.project.backend.dto.LoginResponse;
 import com.project.backend.model.User;
+import com.project.backend.repository.UserRepository;
 import com.project.backend.service.UserService;
 import com.project.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -25,6 +26,8 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> addUser(@RequestBody User user) {
@@ -57,4 +60,9 @@ public class UserController {
         return new ResponseEntity<> (response, HttpStatus.OK);
     }
 
+    @GetMapping("/allStaff")
+    public ResponseEntity<List<Map<String, Object>>> getAllStaff() {
+        List<Map<String, Object>> allStaff = userService.getAllStaff();
+        return new ResponseEntity<>(allStaff, HttpStatus.OK);
+    }
 }

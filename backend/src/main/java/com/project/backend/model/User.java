@@ -22,5 +22,6 @@ public class User   {
     private String password;
     private String phone;
     private String userType;
-    private int branch;
+    private Long branch;
+    private boolean active;
 }

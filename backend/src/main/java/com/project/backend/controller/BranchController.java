@@ -1,14 +1,13 @@
 package com.project.backend.controller;
 
+import com.project.backend.ResourceNotFoundException;
 import com.project.backend.model.Branch;
+import com.project.backend.model.User;
 import com.project.backend.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +27,12 @@ public class BranchController {
         }
     }
 
+    @PutMapping("branch/update/{id}")
+    public ResponseEntity<Branch> updateBranch(@PathVariable Long id, @RequestBody Branch branch) throws ResourceNotFoundException {
+        Branch updatedBranch = branchService.updateBranch(id,branch);
+        return new ResponseEntity<>(updatedBranch, HttpStatus.OK);
+    }
+
     @GetMapping("branch/allBranch")
         public ResponseEntity<List<Branch>> getAllBranch() {
 List<Branch> branches = branchService.getAllBranches();
@@ -38,5 +43,16 @@ return new ResponseEntity<>(branches, HttpStatus.OK);
     public ResponseEntity<List<Branch>> getActiveBranch() {
         List<Branch> branches = branchService.getActiveBranches();
         return new ResponseEntity<>(branches, HttpStatus.OK);
+    }
+    @PutMapping("branch/deactivate/{id}")
+    public ResponseEntity<String> deactivateBranch(@PathVariable Long id) throws ResourceNotFoundException {
+        Branch deactivatedBranch = branchService.deactivate( id);
+        return new ResponseEntity<>(deactivatedBranch.toString(), HttpStatus.OK);
+    }
+
+    @PutMapping("branch/reactivate/{id}")
+    public ResponseEntity<String> reactivateBranch(@PathVariable Long id) throws ResourceNotFoundException {
+        Branch deactivatedBranch = branchService.reactivate(id);
+        return new ResponseEntity<>(deactivatedBranch.toString(), HttpStatus.OK);
     }
 }
