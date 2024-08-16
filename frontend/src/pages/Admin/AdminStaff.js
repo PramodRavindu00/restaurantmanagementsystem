@@ -7,21 +7,19 @@ import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
-  faRedo,
-  faBan,
+  // faRedo,
+  // faBan,
   faEyeSlash,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import Confirm from "./../../components/Confirm";
+// import Confirm from "./../../components/Confirm";
 import Model from "../../components/Model";
 import Select from "react-select";
 
 function AdminStaff() {
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
-
+  
   //initial values of the form fields
   const initialValues = {
     firstName: "",
@@ -30,7 +28,6 @@ function AdminStaff() {
     phone: "",
     branch: "",
     password: "",
-    confirm: "",
     userType: "Staff",
     active: true,
   };
@@ -43,9 +40,12 @@ function AdminStaff() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
   const [show, setShow] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 
   useEffect(() => {
-    axios
+    if(modalAction === 'add'){
+      axios
       .get("/branch/activeBranch")
       .then((response) => {
         const branches = response.data;
@@ -59,7 +59,22 @@ function AdminStaff() {
       .catch((error) => {
         console.error("Error fetching Data");
       });
-  }, []);
+    }else {
+      axios
+      .get("/branch/allBranch")
+      .then((response) => {
+        const branches = response.data;
+        const options = branches.map((branch) => ({
+          value: branch.id,
+          label: branch.name,
+        }));
+        setBranchOptions(options);
+      })
+      .catch((error) => {
+        console.error("Error fetching Data");
+      });
+    }
+  }, [modalAction]);
 
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -135,36 +150,37 @@ function AdminStaff() {
         </Button>
       ),
     },
-    {
-      name: "Action",
-      cell: (row) => (
-        
-        <>{
-          row.userType === 'Staff' && (
-            <>
-             {row.active ? (
-            <Button
-              onClick={() => handleAction(row.id, "deactivate")}
-              variant="danger"
-              title="Deactivate Staff User Account"
-            >
-              <FontAwesomeIcon icon={faBan} />
-            </Button>
-          ) : (
-            <Button
-              onClick={() => handleAction(row.id, "activate")}
-              variant="success"
-              title="Reactivate Staff User Account"
-            >
-              <FontAwesomeIcon icon={faRedo} />
-            </Button>
-          )}
-            </>
-          )
-        }
-        </>
-      ),
-    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => {
+    //     if (row.userType !== 'Admin') {
+       
+    //       return (
+    //         <>
+    //           {row.active ? (
+    //             <Button
+    //               onClick={() => handleAction(row.id, "deactivate")}
+    //               variant="danger"
+    //               title="Deactivate Staff User Account"
+    //             >
+    //               <FontAwesomeIcon icon={faBan} />
+    //             </Button>
+    //           ) : (
+    //             <Button
+    //               onClick={() => handleAction(row.id, "activate")}
+    //               variant="success"
+    //               title="Reactivate Staff User Account"
+    //             >
+    //               <FontAwesomeIcon icon={faRedo} />
+    //             </Button>
+    //           )}
+    //         </>
+    //       );
+    //     }
+    //     return null; 
+    //   }
+    // }
+    
   ];
 
   const handleChange = (e) => {
@@ -172,50 +188,36 @@ function AdminStaff() {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  //submit the form insert or edit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errors = validate(formValues);
-    setFormErrors(errors);
-    if (Object.keys(errors).length === 0) {
-      if (modalAction === "add") {
-        axios
-          .post("/branch/add", formValues)
-          .then((res) => {
-            toast.success("Branch registered successfully");
-            setFormValues(initialValues);
-            fetchAllStaff();
-            setShow(false);
-          })
-          .catch((error) => {
-            if (error.response && error.response.status === 400) {
-              setFormErrors({
-                ...errors,
-                name: "Branch name already exists",
-              });
-              setFormValues({ ...formValues, name: "" });
-            } else {
-              toast.error("An error occurred");
-            }
-          });
-      } else if (modalAction === "edit") {
-        axios
-          .put(`/branch/update/${formValues.id}`, formValues)
-          .then((res) => {
-            toast.success("Branch updated successfully");
-            setFormValues(initialValues);
-            fetchAllStaff();
-            setShow(false);
-          })
-          .catch((error) => {
-            toast.error("An error occurred");
-            console.error(error);
-          });
-      }
-    }
+  const handleAdd = () => {
+    setModalAction("add");
+    setShow(true);
+    setFormValues(initialValues);
+    setModalTitle("Add New Staff Account");
   };
-
-  const validate = (values) => {
+  
+  const handleEdit = (staff) => {
+    setShow(true);
+    setModalAction("edit");
+    setModalTitle("Edit Staff Details");
+    
+    const selectedBranch = branchOptions.find(
+      (option) => option.value === staff.branchID
+    );
+    setSelectedOption(selectedBranch || null);
+    
+    const editingValues = {
+      id: staff.id,
+      firstName: staff.firstName,
+      lastName: staff.lastName,
+      email: staff.email,
+      phone: staff.phone,
+      branch: selectedBranch ? selectedBranch.value : "",
+      userType: staff.userType,
+    };
+    setFormValues(editingValues);
+  };
+  
+  const validate = (values,modalAction) => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     if (!values.firstName) {
@@ -231,83 +233,142 @@ function AdminStaff() {
     }
     if (!values.phone) {
       errors.phone = "Phone number is required!";
+    } else if (!/^\d+$/.test(values.phone)) {
+      errors.phone = "Phone number must contain only numbers!";
     }
+
     if (!values.branch) {
       errors.branch = "Branch is required!";
     }
-    if (!values.password) {
-      errors.password = "Password is required";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
+
+    if(modalAction === 'add'){
+      if (!values.password) {
+        errors.password = "Password is required";
+      } else if (values.password.length < 4) {
+        errors.password = "Password must be more than 4 characters";
+      } else if (values.password.length > 10) {
+        errors.password = "Password cannot exceed more than 10 characters";
+      }
     }
+   
     return errors;
   };
 
-  const handleAction = (id, action) => {
-    const title =
-      action === "deactivate"
-        ? "Confirm Staff Deactivation"
-        : "Confirm Staff Activation";
-    const message =
-      action === "deactivate"
-        ? "Are you sure you want to deactivate this staff user account?"
-        : "Are you sure you want to activate this staff user account?";
-
-    Confirm({
-      title: title,
-      message: message,
-      onConfirm: () => {
-        if (action === "deactivate") {
-          axios
-            .put(`/branch/deactivate/${id}`)
-            .then((response) => {
-              toast.success("Branch deactivated successfully");
-              fetchAllStaff();
-            })
-            .catch((error) => {
-              toast.error("Failed to deactivate branch");
-              console.error(error);
-            });
-        } else if (action === "activate") {
-          axios
-            .put(`/branch/reactivate/${id}`)
-            .then((response) => {
-              toast.success("Branch activated successfully");
-              fetchAllStaff();
-            })
-            .catch((error) => {
-              toast.error("Failed to activate branch");
-              console.error(error);
-            });
-        }
-      },
-    });
+  //submit the form insert or edit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const errors = validate(formValues,modalAction);
+    setFormErrors(errors);
+    if (Object.keys(errors).length === 0) {
+      if (modalAction === "add") {
+        axios.post("/user/register", formValues)
+          .then((res) => {
+            toast.success("Staff user account created successfully");
+            setFormValues(initialValues);
+            fetchAllStaff();
+            setShow(false);
+          })
+          .catch((error) => {
+            if (error.response && error.response.data) {
+              if (error.response.data === "EMAIL") {
+                setFormErrors({
+                  ...errors,
+                  email: "Email is already registered",
+                });
+                setFormValues({ ...formValues, email: "" });
+              }
+              if (error.response.data === "PHONE") {
+                setFormErrors({
+                  ...errors,
+                  phone: "Phone number is already using with another account",
+                });
+                setFormValues({ ...formValues, phone: "" });
+              }
+            } else {
+              toast.error("An error occurred");
+            }
+          });
+      } else if (modalAction === "edit") {
+        axios.put(`/user/edit/${formValues.id}`, formValues)
+          .then((res) => {
+            toast.success("Staff details updated successfully");
+            setFormValues(initialValues);
+            fetchAllStaff();
+            setShow(false);
+          })
+          .catch((error) => {
+            if (error.response && error.response.data) {
+              if (error.response.data === "EMAIL") {
+                setFormErrors({
+                  ...errors,
+                  email: "Email is already registered with another account",
+                });
+                setFormValues({ ...formValues, email: "" });
+              }
+              if (error.response.data === "PHONE") {
+                setFormErrors({
+                  ...errors,
+                  phone: "Phone number is already using with another account",
+                });
+                setFormValues({ ...formValues, phone: "" });
+              }
+            } else {
+              toast.error("An error occurred");
+            }
+          });
+      }
+    }else{
+      console.log('form has erros');
+    }
   };
+  
+  // const handleAction = (id, action) => {
+  //   const title =
+  //     action === "deactivate"
+  //       ? "Confirm Staff Deactivation"
+  //       : "Confirm Staff Activation";
+  //   const message =
+  //     action === "deactivate"
+  //       ? "Are you sure you want to deactivate this staff user account?"
+  //       : "Are you sure you want to activate this staff user account?";
 
-  const handleEdit = (staff) => {
-    setFormValues(staff);
-    const selectedbranch = branchOptions.find(   //find the branch of the user from the staff object
-      (Option) => Option.value === staff.branchID
-    )
-    setSelectedOption(selectedbranch || null)
-    setModalTitle("Edit Staff Details");
-    setModalAction("edit");
-    setShow(true);
-  };
-
-  const handleAdd = () => {
-    setFormValues(initialValues);
-    setModalTitle("Add New Staff Account");
-    setModalAction("add");
-    setShow(true);
-  };
+  //   Confirm({
+  //     title: title,
+  //     message: message,
+  //     onConfirm: () => {
+  //       if (action === "deactivate") {
+  //         axios
+  //           .put(`/branch/deactivate/${id}`)
+  //           .then((response) => {
+  //             toast.success("Branch deactivated successfully");
+  //             fetchAllStaff();
+  //           })
+  //           .catch((error) => {
+  //             toast.error("Failed to deactivate branch");
+  //             console.error(error);
+  //           });
+  //       } else if (action === "activate") {
+  //         axios
+  //           .put(`/branch/reactivate/${id}`)
+  //           .then((response) => {
+  //             toast.success("Branch activated successfully");
+  //             fetchAllStaff();
+  //           })
+  //           .catch((error) => {
+  //             toast.error("Failed to activate branch");
+  //             console.error(error);
+  //           });
+  //       }
+  //     },
+  //   });
+  // };
 
   const ModalClose = () => {
     setShow(false); //close the modal
+    setFormValues(initialValues);
     setFormErrors({}); //clear the form errors if there is any
     setSelectedOption(null)
+    setPasswordVisible(false);
   };
 
   return (
@@ -365,11 +426,12 @@ function AdminStaff() {
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
-                type="email"
+                type="text"
                 placeholder="Enter email"
                 name="email"
                 value={formValues.email}
                 onChange={handleChange}
+                readOnly = {modalAction === 'edit' && formValues.userType === 'Admin'}
               />
               <span className="error-message">{formErrors.email}</span>
             </Form.Group>
@@ -394,6 +456,7 @@ function AdminStaff() {
                     name="password"
                     value={formValues.password}
                     onChange={handleChange}
+                    disabled ={modalAction === "edit"}
                   />
                   <Button
                     className="btn btn-secondary"

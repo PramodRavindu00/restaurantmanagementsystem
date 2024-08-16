@@ -18,4 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.userType != :userType")
     List<User> findUsersByUserType(@Param("userType") String userType);
+
+    @Query("SELECT COUNT(u.email) FROM User u WHERE u.email = :email AND u.id != :id")
+    Long emailTakenWhenUpdating(@Param("id") Long id, @Param("email") String email);
+
+    @Query("SELECT COUNT(u.phone) FROM User u WHERE u.phone = :phone AND u.id != :id")
+    Long phoneTakenWhenUpdating(@Param("id") Long id, @Param("phone") String phone);
 }

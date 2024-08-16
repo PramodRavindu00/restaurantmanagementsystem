@@ -46,6 +46,46 @@ function Branch() {
       .catch((error) => console.error(error));
   };
 
+  const handleAction = (id, action) => {
+    const title =
+      action === "deactivate"
+        ? "Confirm Branch Deactivation"
+        : "Confirm Branch Activation";
+    const message =
+      action === "deactivate"
+        ? "Are you sure you want to deactivate this branch?"
+        : "Are you sure you want to activate this branch?";
+
+    Confirm({
+      title: title,
+      message: message,
+      onConfirm: () => {
+        if (action === "deactivate") {
+          axios
+            .put(`/branch/deactivate/${id}`)
+            .then((response) => {
+              toast.success("Branch deactivated successfully");
+              fetchBranches();
+            })
+            .catch((error) => {
+              toast.error("Failed to deactivate branch");
+              console.error(error);
+            });
+        } else if (action === "activate") {
+          axios
+            .put(`/branch/reactivate/${id}`)
+            .then((response) => {
+              toast.success("Branch activated successfully");
+              fetchBranches();
+            })
+            .catch((error) => {
+              toast.error("Failed to activate branch");
+              console.error(error);
+            });
+        }
+      },
+    });
+  };
   //columns and data objects for the table
   const columns = [
     {
@@ -142,8 +182,15 @@ function Branch() {
             setShow(false);
           })
           .catch((error) => {
-            toast.error("An error occurred");
-            console.error(error);
+            if (error.response && error.response.status === 400) {
+              setFormErrors({
+                ...errors,
+                name: "Branch name already exists",
+              });
+              setFormValues({ ...formValues, name: "" });
+            } else {
+              toast.error("An error occurred");
+            }
           });
       }
     }
@@ -160,46 +207,6 @@ function Branch() {
     return errors;
   };
 
-  const handleAction = (id, action) => {
-    const title =
-      action === "deactivate"
-        ? "Confirm Branch Deactivation"
-        : "Confirm Branch Activation";
-    const message =
-      action === "deactivate"
-        ? "Are you sure you want to deactivate this branch?"
-        : "Are you sure you want to activate this branch?";
-
-    Confirm({
-      title: title,
-      message: message,
-      onConfirm: () => {
-        if (action === "deactivate") {
-          axios
-            .put(`/branch/deactivate/${id}`)
-            .then((response) => {
-              toast.success("Branch deactivated successfully");
-              fetchBranches();
-            })
-            .catch((error) => {
-              toast.error("Failed to deactivate branch");
-              console.error(error);
-            });
-        } else if (action === "activate") {
-          axios
-            .put(`/branch/reactivate/${id}`)
-            .then((response) => {
-              toast.success("Branch activated successfully");
-              fetchBranches();
-            })
-            .catch((error) => {
-              toast.error("Failed to activate branch");
-              console.error(error);
-            });
-        }
-      },
-    });
-  };
 
   const handleEdit = (branch) => {
     setFormValues(branch);

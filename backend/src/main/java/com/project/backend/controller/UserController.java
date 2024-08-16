@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -64,5 +65,28 @@ public class UserController {
     public ResponseEntity<List<Map<String, Object>>> getAllStaff() {
         List<Map<String, Object>> allStaff = userService.getAllStaff();
         return new ResponseEntity<>(allStaff, HttpStatus.OK);
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<String> editUser(@PathVariable Long id, @RequestBody User user) {
+        Optional<User> currentUserOpt = userRepository.findById(id);
+        if(currentUserOpt.isPresent()){
+            User existingUser = currentUserOpt.get();
+            if(userService.isEmailTakenByAnotherUser(id, user.getEmail())){
+                return new ResponseEntity<>("EMAIL", HttpStatus.BAD_REQUEST);
+            }
+            if(userService.isPhoneTakenByAnotherUser(id, user.getPhone())){
+                return new ResponseEntity<>("PHONE", HttpStatus.BAD_REQUEST);
+            }
+           existingUser.setFirstName(user.getFirstName());
+            existingUser.setLastName(user.getLastName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setPhone(user.getPhone());
+            existingUser.setBranch(user.getBranch());
+            userRepository.save(existingUser);
+            return new ResponseEntity<>("User Updated Successfully", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
+        }
     }
 }

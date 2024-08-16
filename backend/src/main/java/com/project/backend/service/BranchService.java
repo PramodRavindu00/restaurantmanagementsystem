@@ -50,4 +50,8 @@ public class BranchService {
     public boolean isBranchExist(String branch) {
         return branchRepository.findByName(branch).isPresent();
     }
+
+    public boolean isBranchNameUsingOther(Long id, String name) {
+        return branchRepository.nameTakenWhenUpdating(id,name)>0;
+    }
 }

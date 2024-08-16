@@ -11,22 +11,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private static final Logger logger = Logger.getLogger(UserService.class.getName());
-
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private BranchService branchService;
 
     public User newUser(User user) {
         String passwordEncoded = passwordEncoder.encode(user.getPassword());
@@ -72,5 +67,11 @@ public class UserService {
         return list;
     }
 
+    public boolean isEmailTakenByAnotherUser(Long id, String email) {
+        return userRepository.emailTakenWhenUpdating(id, email) > 0;
+    }
 
+    public boolean isPhoneTakenByAnotherUser(Long id, String phone) {
+        return userRepository.phoneTakenWhenUpdating(id, phone) > 0;
+    }
 }
