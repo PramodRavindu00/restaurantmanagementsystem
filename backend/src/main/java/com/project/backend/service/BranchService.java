@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,4 +53,5 @@ public class BranchService {
     public boolean isBranchNameUsingOther(Long id, String name) {
         return branchRepository.nameTakenWhenUpdating(id,name)>0;
     }
+
 }

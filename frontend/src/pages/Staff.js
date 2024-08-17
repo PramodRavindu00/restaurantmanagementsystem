@@ -3,10 +3,13 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import OrderManage from './Staff/OrderManage';
+import BranchReservations from './Staff/BranchReservations';
 
 function Staff(){
+
     const routes = [
       { path: "ordermanage", name: "Orders", component: OrderManage },
+      { path: "branchReservations", name: "Reservations", component: BranchReservations },
       { path: "profile", name: "Profile", component: OrderManage },
       
     ];

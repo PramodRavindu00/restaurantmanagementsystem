@@ -14,6 +14,7 @@ import Staff from "./pages/Staff";
 import Customer from "./pages/Customer";
 import PrivateRoute from "./components/PrivateRoute";
 import Footer from "./components/Footer";
+import { LoggedUser } from "./components/LoggedUser";
 
 function App() {
   const userType = localStorage.getItem("userType");
@@ -34,6 +35,8 @@ function App() {
   };
 
   return (
+    // logged user context
+    <LoggedUser>    
     <div className="app-container">
       <Router>
         <Routes>
@@ -58,6 +61,7 @@ function App() {
       </Router>
       <Footer />
     </div>
+    </LoggedUser>
   );
 }
 

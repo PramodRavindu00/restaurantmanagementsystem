@@ -89,4 +89,14 @@ public class UserController {
             return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/getLoggedUser/{email}")
+    public ResponseEntity<Object> getLoggedUser(@PathVariable String email) {
+        User founderUser = userService.findByEmail(email);
+        if(founderUser == null){
+            return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>(founderUser, HttpStatus.OK);
+        }
+    }
 }

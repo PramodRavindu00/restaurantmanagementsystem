@@ -7,7 +7,9 @@ import AdminProducts from './Admin/AdminProducts';
 import AdminQueries from './Admin/AdminQueries';
 import Reports from './Admin/Reports';
 
+
 function Admin() {
+
   const routes = [
     { path: "adminproducts", name: "Products", component: AdminProducts },
     { path: "branch", name: "Branch", component: Branch },
@@ -18,6 +20,7 @@ function Admin() {
   ];
 
   return (
+
     <div className="page-content">
       <Navbar routes={routes} />
       <Routes>
@@ -27,6 +30,7 @@ function Admin() {
         ))}
       </Routes>
     </div>
+   
   );
 }
 

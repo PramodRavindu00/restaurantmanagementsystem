@@ -5,12 +5,15 @@ import Navbar from "../components/Navbar";
 import CustomerProducts from './Customer/CustomerProducts';
 import MyOrders from './Customer/MyOrders';
 import CustomerQueries from './Customer/CustomerQueries';
+import CustomerReservations from './Customer/CustomerReservations';
 
 
 function Customer() {
+
     const routes = [
       { path: "customerProducts", name: "Products", component: CustomerProducts },
       { path: "myorders", name: "My Orders", component: MyOrders },
+      { path: "customerReservation", name: "Reservations", component: CustomerReservations },
       { path: "myqueries", name: "My Queries", component: CustomerQueries },
       { path: "profile", name: "Profile", component: MyOrders },
     ];
