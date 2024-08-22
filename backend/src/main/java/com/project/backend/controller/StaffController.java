@@ -19,6 +19,7 @@ public class StaffController {
 
     @Autowired
     private  ReservationService reservationService;
+
     @Autowired
     private StaffService staffService;
 
@@ -29,14 +30,41 @@ public class StaffController {
   }
 
   @PutMapping("/acceptReservation/{id}")
-    public ResponseEntity<Reservation> acceptReservation(@PathVariable Long id) throws ResourceNotFoundException {
-        Reservation reservation = staffService.acceptReservation(id);
-        return new ResponseEntity<>(reservation,HttpStatus.OK);
+    public ResponseEntity<String> acceptReservation(@PathVariable Long id) {
+       try{
+           Reservation reservation = staffService.acceptReservation(id);
+           return new ResponseEntity<>("accepted",HttpStatus.OK);
+       }
+       catch(ResourceNotFoundException e){
+           return new ResponseEntity<>("not found",HttpStatus.NOT_FOUND);
+       }
+       catch (RuntimeException e){
+           String error = e.getMessage();
+           if (error.contains("notPending")){
+               return new ResponseEntity<>("not a pending reservation",HttpStatus.BAD_REQUEST);
+           } else if (error.contains("failed")) {
+               return new ResponseEntity<>("failed to save or email",HttpStatus.INTERNAL_SERVER_ERROR);
+           }
+           return new ResponseEntity<>("an error occurred",HttpStatus.INTERNAL_SERVER_ERROR);
+       }
   }
 
     @PutMapping("/declineReservation/{id}")
-    public ResponseEntity<Reservation> declineReservation(@PathVariable Long id) throws ResourceNotFoundException {
-        Reservation reservation = staffService.declineReservation(id);
-        return new ResponseEntity<>(reservation,HttpStatus.OK);
+    public ResponseEntity<String> declineReservation(@PathVariable Long id){
+        try{
+            Reservation reservation = staffService.declineReservation(id);
+            return new ResponseEntity<>("declined",HttpStatus.OK);
+        } catch(ResourceNotFoundException e){
+            return new ResponseEntity<>("not found",HttpStatus.NOT_FOUND);
+        }
+        catch (RuntimeException e){
+            String error = e.getMessage();
+            if (error.contains("notPending")){
+                return new ResponseEntity<>("not a pending reservation",HttpStatus.BAD_REQUEST);
+            } else if (error.contains("failed")) {
+                return new ResponseEntity<>("failed to save or email",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>("an error occurred",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

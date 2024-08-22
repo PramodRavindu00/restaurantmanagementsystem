@@ -253,7 +253,7 @@ function CustomerReservations() {
               setShow(false);
               setSubmitMessage("");
               setMessageClass("");
-            }, 3000);
+            }, 2000);
             fetchReservations();
           })
           .catch((error) => {
