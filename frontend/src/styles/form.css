@@ -1,14 +1,37 @@
 .submit{
-    width: 50%;
+    width: 30%;
     padding: 0.8rem;
     margin-bottom: 1.5rem;
 }
 
+@media (max-width: 576px) {
+    .submit {
+        width: 80%; 
+        padding: 0.5rem; 
+        font-size: 1.2rem;
+    }
+}
+
 .mb-3{
-    margin: 0.8rem 0;
+    margin: 0.4rem 0;
 }
 
 .error-message{
     color: red;
     font-size: 1rem;
+}
+
+.phrase{
+    font-size: 1.1rem;
+    font-style: italic;
+    font-weight: 500;
+    color: black;
+}
+
+.phrase .formlink{
+    text-decoration: none;
+}
+
+.formlink:hover{
+    color: #DAA520;
 }

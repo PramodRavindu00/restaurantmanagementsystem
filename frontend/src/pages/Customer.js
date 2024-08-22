@@ -27,7 +27,6 @@ function Customer() {
             <Route key={path} path={path} element={<Component />} />
           ))}
         </Routes>
-        
       </div>
     );
   }

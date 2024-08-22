@@ -57,7 +57,14 @@ public class UserController {
         }
 
    String token = jwtUtil.generateToken(existingUser.getEmail(), existingUser.getUserType());
-        LoginResponse response = new LoginResponse(existingUser.getEmail(), existingUser.getUserType(),token);
+   String firstName = existingUser.getFirstName();
+   String lastName = existingUser.getLastName();
+   String email = existingUser.getEmail();
+   String phone = existingUser.getPhone();
+   Long id = existingUser.getId();
+   Long branch = existingUser.getBranch();
+   String userType = existingUser.getUserType();
+        LoginResponse response = new LoginResponse(id,firstName,lastName,phone,branch,email,userType,token);
         return new ResponseEntity<> (response, HttpStatus.OK);
     }
 

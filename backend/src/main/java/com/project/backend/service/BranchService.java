@@ -54,4 +54,7 @@ public class BranchService {
         return branchRepository.nameTakenWhenUpdating(id,name)>0;
     }
 
+    public String findBranchNameByID(Long id) {
+        return branchRepository.findBranchNameById(id);
+    }
 }

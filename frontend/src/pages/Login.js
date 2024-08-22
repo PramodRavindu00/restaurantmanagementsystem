@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../styles/form.css";
-import '../styles/App.css';
+import "../styles/App.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,9 +41,22 @@ function Login() {
       axios
         .post("/user/login", valuesToSubmit)
         .then((res) => {
-          const { token, userType } = res.data;
-          localStorage.setItem("authToken", token);
-          localStorage.setItem("userType", userType);
+          const data = res.data;
+          const userData = {
+            branch: data.branch,
+            email: data.email,
+            firstName: data.firstName,
+            id: data.id,
+            lastName: data.lastName,
+            phone: data.phone,
+            token: data.token,
+            userType: data.userType,
+          };
+
+          localStorage.setItem("user", JSON.stringify(userData));
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userType", data.userType);
+          const userType = data.userType;
 
           toast.success("Login success");
           setFormValues(initialValues);
@@ -91,75 +104,91 @@ function Login() {
 
   const routes = [
     { path: "/", name: "Home", component: Home },
-    { name: "Login",},
+    { name: "Login" },
     { path: "/register", name: "Register", component: Register },
   ];
   return (
     <div className="page-content">
-       <Navbar routes={routes} />
-      <Form.Group className="mb-4">
-        <h1>Login</h1>
-      </Form.Group>
+      <Navbar routes={routes} />
       <div className="row justify-content-center">
-      <div className="col-10 col-sm-8 col-md-6 col-lg-4">
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-4" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={formValues.email}
-                onChange={handleChange}
-              />
-              <span className="error-message">{formErrors.email}</span>
-            </Form.Group>
-            <Form.Group className="mb-4" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <div className="input-group">
-                <Form.Control
-                  type={passwordVisible ? "text" : "password"}
-                  placeholder="Password"
-                  name="password"
-                  value={formValues.password}
-                  onChange={handleChange}
-                />
-                <Button
-                  className="btn btn-secondary"
-                  onClick={togglePasswordVisibility}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordVisible ? faEyeSlash : faEye}
-                  />
-                </Button>
-              </div>
-              <span className="error-message">{formErrors.password}</span>
-            </Form.Group>
-            <div className="text-center">
-              <Button
-                variant="secondary"
-                className="btn btn-lg submit"
-                type="submit"
-              >
-                Login
-              </Button>
+        <div className="col-10 col-sm-8 col-md-6 col-lg-8">
+          <Form.Group className="mb-2">
+            <h1>Login</h1>
+          </Form.Group>
+          <div className="row justify-content-center">
+            <div className="col-12 col-sm-8 col-md-6 col-lg-10">
+              <Form onSubmit={handleSubmit}>
+                <div className="row d-flex justify-content-center">
+                  <div className="col-lg-5">
+                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                      <Form.Label>Email address</Form.Label>
+                      <Form.Control
+                        type="email"
+                        placeholder="Enter email"
+                        name="email"
+                        value={formValues.email}
+                        onChange={handleChange}
+                      />
+                      <span className="error-message">{formErrors.email}</span>
+                    </Form.Group>
+                  </div>
+                </div>
+                <div className="row d-flex justify-content-center">
+                  <div className="col-lg-5">
+                    <Form.Group className="mb-4" controlId="formBasicPassword">
+                      <Form.Label>Password</Form.Label>
+                      <div className="input-group">
+                        <Form.Control
+                          type={passwordVisible ? "text" : "password"}
+                          placeholder="Password"
+                          name="password"
+                          value={formValues.password}
+                          onChange={handleChange}
+                        />
+                        <Button
+                          className="btn btn-secondary"
+                          onClick={togglePasswordVisibility}
+                        >
+                          <FontAwesomeIcon
+                            icon={passwordVisible ? faEyeSlash : faEye}
+                          />
+                        </Button>
+                      </div>
+                      <span className="error-message">
+                        {formErrors.password}
+                      </span>
+                    </Form.Group>
+                  </div>
+                </div>
+                <div className="row d-flex justify-content-center">
+                  <div className="text-center">
+                    <Button
+                      className="btn-lg submit"
+                      variant="secondary"
+                      type="submit"
+                    >
+                      Login
+                    </Button>
+                  </div>
+                </div>
+              </Form>
             </div>
-          </Form>
+          </div>
+          <ToastContainer
+            position="top-center"
+            autoClose={750}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
         </div>
       </div>
-      <ToastContainer
-        position="top-center"
-        autoClose={750}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
     </div>
   );
 }

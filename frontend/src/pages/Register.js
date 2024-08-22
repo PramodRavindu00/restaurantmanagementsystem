@@ -12,13 +12,15 @@ import Login from "./Login";
 import Home from "./Home";
 import Navbar from "../components/Navbar";
 import Select from "react-select";
+import { Link } from "react-router-dom";
 
 function Register() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
-  const toggleConfirmPasswordVisibility = () => setConfirmPasswordVisible(!confirmPasswordVisible);
+  const toggleConfirmPasswordVisibility = () =>
+    setConfirmPasswordVisible(!confirmPasswordVisible);
 
   const initialValues = {
     firstName: "",
@@ -29,9 +31,9 @@ function Register() {
     password: "",
     confirm: "",
     userType: "Customer",
-    active:true,
+    active: true,
   };
-  
+
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [selectedOption, setSelectedOption] = useState(null);
@@ -58,10 +60,11 @@ function Register() {
       });
   }, []);
 
-  const handleSelectChange = (selectedOption)=>{
+  const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
-    setFormValues({...formValues,branch:selectedOption.value});
-  }
+    setFormValues({ ...formValues, branch: selectedOption.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validate(formValues);
@@ -146,109 +149,138 @@ function Register() {
       <Navbar routes={routes} />
       <h1>Register</h1>
       <div className="row justify-content-center">
-        <div className="col-10 col-sm-8 col-md-6 col-lg-4">
+        <div className="col-10 col-sm-8 col-md-6 col-lg-8">
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicFirstName">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter First name"
-                name="firstName"
-                value={formValues.firstName}
-                onChange={handleChange}
-              />
-              <span className="error-message">{formErrors.firstName}</span>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicLastName">
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Last name"
-                name="lastName"
-                value={formValues.lastName}
-                onChange={handleChange}
-              />
-              <span className="error-message">{formErrors.lastName}</span>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={formValues.email}
-                onChange={handleChange}
-              />
-              <span className="error-message">{formErrors.email}</span>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPhone">
-              <Form.Label>Contact No</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Contact No"
-                name="phone"
-                value={formValues.phone}
-                onChange={handleChange}
-              />
-              <span className="error-message">{formErrors.phone}</span>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <div className="input-group">
-                <Form.Control
-                  type={passwordVisible ? "text" : "password"}
-                  placeholder="Password"
-                  name="password"
-                  value={formValues.password}
-                  onChange={handleChange}
-                />
-                <Button
-                  className="btn btn-secondary"
-                  onClick={togglePasswordVisibility}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordVisible ? faEyeSlash : faEye}
+            <div className="row d-flex justify-content-center">
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicFirstName">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter First name"
+                    name="firstName"
+                    value={formValues.firstName}
+                    onChange={handleChange}
                   />
-                </Button>
+                  <span className="error-message">{formErrors.firstName}</span>
+                </Form.Group>
               </div>
-              <span className="error-message">{formErrors.password}</span>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <div className="input-group">
-                <Form.Control
-                  type={confirmPasswordVisible ? "text" : "password"}
-                  placeholder="Confirm Password"
-                  name="confirm"
-                  value={formValues.confirm}
-                  onChange={handleChange}
-                />
-                <Button
-                  className="btn btn-secondary"
-                  onClick={toggleConfirmPasswordVisibility}
-                >
-                  <FontAwesomeIcon
-                    icon={confirmPasswordVisible ? faEyeSlash : faEye}
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicLastName">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Last name"
+                    name="lastName"
+                    value={formValues.lastName}
+                    onChange={handleChange}
                   />
-                </Button>
+                  <span className="error-message">{formErrors.lastName}</span>
+                </Form.Group>
               </div>
-              <span className="error-message">{formErrors.confirm}</span>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicBranch">
-              <Form.Label>Closest Branch</Form.Label>
-              <Select
-                name="branch"
-                options={branchOptions}
-                value={selectedOption}
-                onChange={handleSelectChange}
-                placeholder="Select the branch"
-              />
-              <span className="error-message">{formErrors.branch}</span>
-            </Form.Group>
-            <div className="text-center">
+            </div>
+
+            <div className="row d-flex justify-content-center">
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicEmail">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    name="email"
+                    value={formValues.email}
+                    onChange={handleChange}
+                  />
+                  <span className="error-message">{formErrors.email}</span>
+                </Form.Group>
+              </div>
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicPhone">
+                  <Form.Label>Contact No</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Contact No"
+                    name="phone"
+                    value={formValues.phone}
+                    onChange={handleChange}
+                  />
+                  <span className="error-message">{formErrors.phone}</span>
+                </Form.Group>
+              </div>
+            </div>
+
+            <div className="row d-flex justify-content-center">
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <div className="input-group">
+                    <Form.Control
+                      type={passwordVisible ? "text" : "password"}
+                      placeholder="Password"
+                      name="password"
+                      value={formValues.password}
+                      onChange={handleChange}
+                    />
+                    <Button
+                      className="btn btn-secondary"
+                      onClick={togglePasswordVisibility}
+                    >
+                      <FontAwesomeIcon
+                        icon={passwordVisible ? faEyeSlash : faEye}
+                      />
+                    </Button>
+                  </div>
+                  <span className="error-message">{formErrors.password}</span>
+                </Form.Group>
+              </div>
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicConfirmPassword">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <div className="input-group">
+                    <Form.Control
+                      type={confirmPasswordVisible ? "text" : "password"}
+                      placeholder="Confirm Password"
+                      name="confirm"
+                      value={formValues.confirm}
+                      onChange={handleChange}
+                    />
+                    <Button
+                      className="btn btn-secondary"
+                      onClick={toggleConfirmPasswordVisibility}
+                    >
+                      <FontAwesomeIcon
+                        icon={confirmPasswordVisible ? faEyeSlash : faEye}
+                      />
+                    </Button>
+                  </div>
+                  <span className="error-message">{formErrors.confirm}</span>
+                </Form.Group>
+              </div>
+            </div>
+            <div className="row d-flex justify-content-center">
+              <div className="col-lg-4 mb-3">
+                <Form.Group controlId="formBasicBranch">
+                  <Form.Label>Closest Branch</Form.Label>
+                  <Select
+                    name="branch"
+                    options={branchOptions}
+                    value={selectedOption}
+                    onChange={handleSelectChange}
+                    placeholder="Select the branch"
+                  />
+                  <span className="error-message">{formErrors.branch}</span>
+                </Form.Group>
+              </div>
+              <div className="col-lg-4 mb-3"></div>
+            </div>
+            <div className="row d-flex justify-content-center align-items-center">
+              <div className="col-lg-4 text-center">
+                <p className="phrase">
+                  Already have an Account? <Link to="/login" className="formlink">Login</Link>
+                </p>
+              </div>
+            </div>
+            <div className="row d-flex justify-content-center mt-2">
               <Button
                 variant="secondary"
                 className="btn btn-lg submit"
@@ -260,6 +292,7 @@ function Register() {
           </Form>
         </div>
       </div>
+
       <ToastContainer
         position="top-center"
         autoClose={750}

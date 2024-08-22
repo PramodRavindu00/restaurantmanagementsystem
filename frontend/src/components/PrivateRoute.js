@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ component: Component, role, ...rest }) => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('token');
   const userType = localStorage.getItem('userType');
 
   if (!token) {

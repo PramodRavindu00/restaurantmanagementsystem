@@ -15,6 +15,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByPhone(String phone);
 
+    @Query("SELECT CONCAT(u.firstName, ' ', u.lastName) FROM User u WHERE u.id = :id")
+    String getUserNameByID(@Param("id") Long id);
+
+    @Query("SELECT u.email FROM User u WHERE u.id = :id")
+    String getUserEmailByID(@Param("id") Long id);
 
     @Query("SELECT u FROM User u WHERE u.userType != :userType")
     List<User> findUsersByUserType(@Param("userType") String userType);

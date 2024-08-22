@@ -11,6 +11,9 @@ import java.util.Optional;
 public interface BranchRepository extends JpaRepository<Branch, Long> {
     Optional<Branch> findByName(String name);
 
+    @Query("SELECT b.name FROM Branch b WHERE b.id = :id")
+    String findBranchNameById(@Param("id") Long id);
+
     @Query("SELECT b FROM Branch b WHERE b.active = true")
     List<Branch> findAllActive();
 

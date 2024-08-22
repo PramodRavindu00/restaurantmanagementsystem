@@ -41,6 +41,14 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
+    public String findUserNameByID(Long id) {
+        return  userRepository.getUserNameByID(id);
+    }
+
+    public String findUserEmailByID(Long id) {
+        return userRepository.getUserEmailByID(id);
+    }
+
     public List<Map<String, Object>> getAllStaff() {
         List<Map<String, Object>> list = new ArrayList<>();
         String userType = "Customer";

@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/navbar.css";
+import logo from "../assets/ABC.png"
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut } from "@fortawesome/free-solid-svg-icons";
@@ -9,14 +10,14 @@ function Navbar({ routes}) {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('token');
 
   const logout = ()=>{
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userType');
+    localStorage.clear();
+    
     setTimeout(()=>{
       navigate("/login");
-    },750)
+    },1000)
   }
 
   const ShowConfirm = ()=>{
@@ -31,7 +32,7 @@ function Navbar({ routes}) {
     <nav className="nav">
       <div className="info">
         <li className="nav-item">
-          <h2>ABC Restaurant</h2>
+       <img src={logo} height={100}/>
           </li>
       </div>
       <ul className="navbar">

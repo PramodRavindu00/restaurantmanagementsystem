@@ -28,13 +28,9 @@
     transition: 0.3s;
 }
 
-.link:hover{
-    background-color: #ff4d00;
-}
 
 .active{
-    background-color: white;
-    color: black;
+    color: #DAA520;
 }
 
 .logout{
@@ -49,6 +45,6 @@
   }
   
   .logout:hover {
-    color: #ff4d00;
+    color: #DAA520;
   }
   

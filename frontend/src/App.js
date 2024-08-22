@@ -1,5 +1,5 @@
 import "./styles/App.css";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,7 +14,7 @@ import Staff from "./pages/Staff";
 import Customer from "./pages/Customer";
 import PrivateRoute from "./components/PrivateRoute";
 import Footer from "./components/Footer";
-import { LoggedUser } from "./components/LoggedUser";
+import Aos from "aos";
 
 function App() {
   const userType = localStorage.getItem("userType");
@@ -34,9 +34,12 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    Aos.init({ duration: 2000 });
+}, []);
+
   return (
-    // logged user context
-    <LoggedUser>    
+
     <div className="app-container">
       <Router>
         <Routes>
@@ -61,7 +64,7 @@ function App() {
       </Router>
       <Footer />
     </div>
-    </LoggedUser>
+
   );
 }
 
