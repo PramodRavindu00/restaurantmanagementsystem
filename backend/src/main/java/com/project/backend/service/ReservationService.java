@@ -5,8 +5,10 @@ import com.project.backend.repository.ReservationRepository;
 import com.project.backend.util.EmailContent;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,7 @@ public class ReservationService {
         return String.format("RES%03d", nextNumber);
     }
 
+    @Async
     protected void sendConfirmationEmail(Reservation reservation) throws MessagingException {
         try {
             Long customerID = reservation.getCustomerID();
@@ -51,6 +54,7 @@ public class ReservationService {
         }
     }
 
+    @Async
     protected void sendAcceptanceEmail(Reservation reservation) throws MessagingException {
         try {
             Long customerID = reservation.getCustomerID();
@@ -70,6 +74,8 @@ public class ReservationService {
             throw new MessagingException("Failed to send acceptance email", e);
         }
     }
+
+    @Async
     protected void sendDeclineEmail(Reservation reservation) throws MessagingException {
         try {
             Long customerID = reservation.getCustomerID();
@@ -97,7 +103,7 @@ public class ReservationService {
 //        return reservationRepository.findAllByStatus(status);
 //    }
 
-     public List<Reservation> getAllReservations(Long id){
+    public List<Reservation> getAllReservations(Long id){
 return reservationRepository.findByBranch(id);
     }
 
@@ -112,20 +118,42 @@ return reservationRepository.findByBranch(id);
             String branchName = branchService.findBranchNameByID(branchId);
             String userName = userService.findUserNameByID(userID);
 
-            Map<String, Object> reservationMap = new HashMap<>();
-            reservationMap.put("id", reservation.getId());
-            reservationMap.put("reservationNo", reservation.getReservationNo());
-            reservationMap.put("customerName", userName);
-            reservationMap.put("branchName", branchName);
-            reservationMap.put("date", reservation.getDate());
-            reservationMap.put("time", reservation.getTime());
-            reservationMap.put("phone", reservation.getPhone());
-            reservationMap.put("status", reservation.getStatus());
-            reservationMap.put("seats",reservation.getSeats());
-            reservationMap.put("info", reservation.getInfo());
+            Map<String, Object> reservationMap = getStringObjectMap(reservation, userName, branchName);
             list.add(reservationMap);
         }
         return list;
+    }
+
+    public List<Map<String,Object>> getTodayReservationsOfBranch(Long id){
+        List<Map<String,Object>> list = new ArrayList<>();
+        LocalDate date = LocalDate.now();
+        List<Reservation> reservationList = reservationRepository.findTodayReservation(id,date);
+        for(Reservation reservation : reservationList){
+            Long branchId = reservation.getBranch();
+            Long userID = reservation.getCustomerID();
+
+            String branchName = branchService.findBranchNameByID(branchId);
+            String userName = userService.findUserNameByID(userID);
+
+            Map<String, Object> reservationMap = getStringObjectMap(reservation, userName, branchName);
+            list.add(reservationMap);
+        }
+        return list;
+    }
+
+    private static Map<String, Object> getStringObjectMap(Reservation reservation, String userName, String branchName) {
+        Map<String, Object> reservationMap = new HashMap<>();
+        reservationMap.put("id", reservation.getId());
+        reservationMap.put("reservationNo", reservation.getReservationNo());
+        reservationMap.put("customerName", userName);
+        reservationMap.put("branchName", branchName);
+        reservationMap.put("date", reservation.getDate());
+        reservationMap.put("time", reservation.getTime());
+        reservationMap.put("phone", reservation.getPhone());
+        reservationMap.put("status", reservation.getStatus());
+        reservationMap.put("seats", reservation.getSeats());
+        reservationMap.put("info", reservation.getInfo());
+        return reservationMap;
     }
 
 }

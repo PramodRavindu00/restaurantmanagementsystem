@@ -111,7 +111,7 @@ function Login() {
     <div className="page-content">
       <Navbar routes={routes} />
       <div className="row justify-content-center">
-        <div className="col-10 col-sm-8 col-md-6 col-lg-8">
+        <div className="col-10 col-sm-12 col-md-12 col-lg-10">
           <Form.Group className="mb-2">
             <h1>Login</h1>
           </Form.Group>

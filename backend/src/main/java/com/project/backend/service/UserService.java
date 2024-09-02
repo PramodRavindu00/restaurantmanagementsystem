@@ -23,18 +23,21 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public boolean isEmailTaken(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public User newUser(User user) {
         String passwordEncoded = passwordEncoder.encode(user.getPassword());
         user.setPassword(passwordEncoded);
         return userRepository.save(user);
     }
 
-    public boolean isEmailTaken(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
+
 
     public boolean isPhoneTaken(String phone) {
-        return userRepository.findByPhone(phone).isPresent();
+       // return userRepository.findByPhone(phone).isPresent();
+        return false;
     }
 
     public User findByEmail(String email){
