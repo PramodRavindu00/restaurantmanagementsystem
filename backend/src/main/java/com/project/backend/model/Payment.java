@@ -1,5 +1,4 @@
 package com.project.backend.model;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 
@@ -16,17 +15,13 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
+public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    private LocalDate date;
-    private String reservationNo;
-    private Long customerID;
-    private Long branch;
-    private String phone;
-    private Long seats;
-    private String time;
-    private String status;
-    private String info;
+    private Long id;
+    private String paymentNo;
+    private String referenceNo;
+    private LocalDateTime dateTime;
+    private double amount;
 }
