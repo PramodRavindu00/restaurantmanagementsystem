@@ -97,7 +97,7 @@ function Login() {
     }
 
     if (!values.password) {
-      errors.password = "Password is required";
+      errors.password = "Password is required!";
     }
     return errors;
   };
@@ -129,7 +129,7 @@ function Login() {
                         value={formValues.email}
                         onChange={handleChange}
                       />
-                      <span className="error-message">{formErrors.email}</span>
+                      <span className="error-message email">{formErrors.email}</span>
                     </Form.Group>
                   </div>
                 </div>
@@ -154,7 +154,7 @@ function Login() {
                           />
                         </Button>
                       </div>
-                      <span className="error-message">
+                      <span className="error-message password">
                         {formErrors.password}
                       </span>
                     </Form.Group>
