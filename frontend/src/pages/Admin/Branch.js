@@ -40,7 +40,6 @@ function Branch() {
           location: item.location,
           active: item.active,
         }));
-
         setBranches(result);
       })
       .catch((error) => console.error(error));

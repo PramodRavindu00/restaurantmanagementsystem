@@ -383,7 +383,7 @@ function AdminStaff() {
             rowsPerPage={10}
             addButton={
               <Button variant="primary" onClick={handleAdd}>
-                Add New Staff
+                Add Staff
               </Button>
             }
           />

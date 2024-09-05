@@ -6,6 +6,7 @@ import AdminStaff from './Admin/AdminStaff';
 import AdminProducts from './Admin/AdminProducts';
 import AdminQueries from './Admin/AdminQueries';
 import Reports from './Admin/Reports';
+import AdminProductView from './Admin/AdminProductView';
 
 
 function Admin() {
@@ -28,6 +29,7 @@ function Admin() {
         {routes.map(({ path, component: Component }) => (
           <Route key={path} path={path} element={<Component />} />
         ))}
+        <Route path="/adminproducts/:productId" element={<AdminProductView/>} />
       </Routes>
     </div>
    
