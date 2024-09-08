@@ -37,6 +37,10 @@ public class ProductService {
         return productRepository.findByProductName(productName).isPresent();
     }
 
+    public boolean isProductNameUsingOther(Long id, String name) {
+        return productRepository.nameTakenWhenUpdating(id,name)>0;
+    }
+
     public List<Map<String, Object>> getAllProducts(){
 
         List<Map<String, Object>> list = new ArrayList<>();

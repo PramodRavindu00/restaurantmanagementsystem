@@ -11,10 +11,10 @@ import CustomerReservations from './Customer/CustomerReservations';
 function Customer() {
 
     const routes = [
-      { path: "customerProducts", name: "Products", component: CustomerProducts },
-      { path: "myorders", name: "My Orders", component: MyOrders },
+      { path: "customerProducts", name: "Menu", component: CustomerProducts },
+      { path: "myorders", name: "Cart & Orders", component: MyOrders },
       { path: "customerReservation", name: "Reservations", component: CustomerReservations },
-      { path: "myqueries", name: "My Queries", component: CustomerQueries },
+      { path: "myqueries", name: "Ask ABC", component: CustomerQueries },
       { path: "profile", name: "Profile", component: MyOrders },
     ];
   

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,36 @@ public class AdminService {
         return newProduct;
     }
 
+    public Product editProduct(Long id, Product product) {
+       Optional <Product> existingProductOpt = productRepository.findById(id);
+        if(existingProductOpt.isPresent()){
+          Product existingProduct = existingProductOpt.get();
+          existingProduct.setProductName(product.getProductName());
+          existingProduct.setDescription(product.getDescription());
+          existingProduct.setPrice(product.getPrice());
+          return productRepository.save(existingProduct);
+        }else{
+            return null;
+        }
+    }
+
+//    public Product changeProductImage(Long id, MultipartFile image)  throws IOException {
+//        Product product = productRepository.findById(id).orElseThrow(
+//                () -> new RuntimeException("Failed to find product with id: " + id)
+//        );
+//
+//        if(image != null && !image.isEmpty()){
+//            String imageURL = saveImage(image,product.getProductNo());
+//            product.setImageURL(imageURL);
+//            productRepository.save(product);
+//        }else {
+//            throw new RuntimeException("Failed to find product with id: " + id);
+//        }
+//        product.setImageURL(image.getOriginalFilename());
+//         productRepository.save(product);
+//        return product;
+//    }
+
     public String saveImage(MultipartFile image, String productNo) throws IOException {
         String path = new File("").getAbsolutePath() + "/images/products/";
         Path directoryPath = Paths.get(path);
@@ -46,8 +77,15 @@ public class AdminService {
         String ext = image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf("."));
         String newFileName = productNo + ext;
         File newFile = new File(path + newFileName);
+
+        if (newFile.exists()) {
+            newFile.delete();
+        }
+
         image.transferTo(newFile);
         return newFileName;
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form, Button, Card, Row, Col, Container, Alert, Spinner } from "react-bootstrap";
 import Model from "../../components/Model";
 import axios from "axios";
@@ -27,16 +27,12 @@ function AdminProducts() {
 
 const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchProducts(); //display all products
-  });
+ 
 
-  const fetchProducts = () => {
+  const fetchProducts = useCallback(() => {
     axios
       .get("/products/allProducts")
-      .then((response) => {
-        console.log(response);
-        
+      .then((response) => {  
         const result = response.data.map((item) => ({
           id: item.id,
           productName: item.productName,
@@ -47,7 +43,11 @@ const navigate = useNavigate();
       })
       .catch((error) => console.error(error))
       .finally(()=>{setProductsLoading(false)});
-  };
+  },[]);
+  
+  useEffect(() => {
+    fetchProducts(); //display all products
+  },[fetchProducts]);
 
   const formatPrice = price =>parseFloat(price).toFixed(2);
 
@@ -234,14 +234,14 @@ const navigate = useNavigate();
       ) : (
       <Row>
         {filteredProducts.map((product) => (
-          <Col key={product.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
+          <Col key={product.id} xs={12} sm={6} md={4} lg={4} className="mb-4">
             <Card style={{ width: "100%" }}>
               <Card.Img variant="top" src={product.image} alt={product.productName} 
               style={{ width: "100%", height: "200px", objectFit: "cover" }}/>
               <Card.Body>
                 <Card.Title>{product.productName}</Card.Title>
                 <Card.Text>{`Rs ${product.price}`}</Card.Text>
-                <Button variant="primary" onClick={()=>hanldeViewMore(product.id)}>View More....</Button>
+                <Button variant="info" onClick={()=>hanldeViewMore(product.id)}>View Details</Button>
               </Card.Body>
             </Card>
           </Col>
