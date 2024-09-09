@@ -9,7 +9,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Register from "./Register";
 
@@ -129,7 +129,9 @@ function Login() {
                         value={formValues.email}
                         onChange={handleChange}
                       />
-                      <span className="error-message email">{formErrors.email}</span>
+                      <span className="error-message email">
+                        {formErrors.email}
+                      </span>
                     </Form.Group>
                   </div>
                 </div>
@@ -160,8 +162,14 @@ function Login() {
                     </Form.Group>
                   </div>
                 </div>
-                <div className="row d-flex justify-content-center">
+                <div className="row d-flex flex-column justify-content-center">
                   <div className="text-center">
+                  <p className="phrase mb-1">
+                      Dont have an Account yet?{" "}
+                      <Link to="/register" className="formlink">
+                        Register
+                      </Link>
+                    </p>
                     <Button
                       className="btn-lg submit"
                       variant="secondary"
@@ -169,8 +177,14 @@ function Login() {
                     >
                       Login
                     </Button>
+                    <p className="phrase mt-1">
+                      <Link to="/register" className="formlink">
+                        Forgot Password ?
+                      </Link>
+                    </p>
                   </div>
                 </div>
+                
               </Form>
             </div>
           </div>

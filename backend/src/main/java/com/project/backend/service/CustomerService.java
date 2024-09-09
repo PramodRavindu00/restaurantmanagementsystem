@@ -3,6 +3,7 @@ package com.project.backend.service;
 import com.project.backend.ResourceNotFoundException;
 import com.project.backend.model.Branch;
 import com.project.backend.model.CustomerOrder;
+import com.project.backend.model.Payment;
 import com.project.backend.model.Reservation;
 import com.project.backend.repository.BranchRepository;
 import com.project.backend.repository.OrderRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -22,6 +24,7 @@ public class CustomerService  {
     private final BranchRepository branchRepository;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
+    private final PaymentService paymentService;
 
     public Reservation addReservation(Reservation reservation){
         Reservation newReservation = null;
@@ -96,13 +99,27 @@ public class CustomerService  {
         try {
             String orderNo = orderService.generateNextOrderNo();
             customerOrder.setOrderNo(orderNo);
-
             customerOrder.setOrderDate(LocalDate.now());
 
             if (customerOrder.getOrderItems() != null) {
                 customerOrder.getOrderItems().forEach(orderItem -> orderItem.setCustomerOrder(customerOrder));
             }
-               return orderRepository.save(customerOrder);
+               CustomerOrder newOrder =  orderRepository.save(customerOrder);
+
+            if(newOrder.getPayType().equals("card")){
+                Payment newPayment = new Payment();
+                newPayment.setAmount(newOrder.getOrderValue());
+                newPayment.setCustomerId(newOrder.getCustomerId());
+                newPayment.setReferenceNo(newOrder.getOrderNo());
+                newPayment.setDateTime(LocalDateTime.now());
+                paymentService.submitPayment(newPayment);
+                byte[] receipt =  paymentService.generateOrderReceipt(newPayment);
+                String attachmentName = "Receipt_"+newPayment.getPaymentNo();
+                orderService.sendOrderReceivedEmail(newOrder,attachmentName,receipt);
+            }else{
+                orderService.sendOrderReceivedEmail(newOrder);
+            }
+               return newOrder;
         } catch (Exception e) {
             throw new RuntimeException("Failed to save Order", e);
         }

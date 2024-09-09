@@ -166,8 +166,8 @@ function BranchReservations() {
     filteredDataToday.length / itemsPerPage
   ); 
   return (
-    <div style={{ margin: "20px auto", width: "90%" }}>
-      <div className="row mb-3">
+    <div>
+      <div className="row m-3">
         <div className="col-12 d-flex flex-wrap">
           <div className="col-12 col-md-6 lg-6">
             <h3 className="text-center mb-3">Pending Reservations</h3>
@@ -183,7 +183,7 @@ function BranchReservations() {
             </div>
 
             {filteredDataPending.length === 0 ? (
-              <Alert variant="warning" className="text-center">
+              <Alert variant="warning" className="text-center mx-4">
                 No pending reservations found.
               </Alert>
             ) : (
@@ -319,7 +319,7 @@ function BranchReservations() {
             </div>
 
             {filteredDataToday.length === 0 ? (
-              <Alert variant="warning" className="text-center">
+              <Alert variant="warning" className="text-center mx-4">
                 No reservations found for today.
               </Alert>
             ) : (

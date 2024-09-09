@@ -425,14 +425,14 @@ function MyOrders() {
         </Col>
         <Col xs={12} md={8} lg={6} className="d-flex flex-column">
           <h3 className="text-center"> My Orders</h3>
-          <Col className="my-3 d-flex">
+          <div className="my-3">
             <Form.Control
               type="text"
               placeholder="Search your orders"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-          </Col>
+          </div>
           {loading ? (
             <div className="text-center">
               <Spinner animation="border" role="status">

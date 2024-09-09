@@ -20,6 +20,7 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long customerId;
     private String paymentNo;
     private String referenceNo;
     private LocalDateTime dateTime;
