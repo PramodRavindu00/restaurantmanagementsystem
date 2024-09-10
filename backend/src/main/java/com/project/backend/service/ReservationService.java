@@ -39,7 +39,7 @@ public class ReservationService {
         try {
             Long customerID = reservation.getCustomerID();
             String name = userService.findUserNameByID(customerID);
-            String message = "Your reservation has been successfully added.<br>" +
+            String message = "Your reservation has been successfully received.<br>" +
                     "Reservation details<br>" +
                     "Reservation No: " + reservation.getReservationNo() + "<br>" +
                     "Selected Branch: " + branchService.findBranchNameByID(reservation.getBranch()) + "<br>" +
@@ -59,7 +59,7 @@ public class ReservationService {
         try {
             Long customerID = reservation.getCustomerID();
             String name = userService.findUserNameByID(customerID);
-            String message = "Congratulations! Your reservation has been accepted.<br>" +
+            String message = "We are happy to inform that your reservation has been accepted.<br>" +
                     "Reservation details<br>" +
                     "Reservation No: " + reservation.getReservationNo() + "<br>" +
                     "Selected Branch: " + branchService.findBranchNameByID(reservation.getBranch()) + "<br>" +

@@ -8,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @Service
@@ -49,7 +46,7 @@ public class OrderService {
         try {
             Long customerID = customerOrder.getCustomerId();
             String name = userService.findUserNameByID(customerID);
-            String message = "Your Order Received.<br>" +
+            String message = "Your order has been successfully received.<br>" +
                     "Order details<br>" +
                     "Order No: " + customerOrder.getOrderNo() + "<br>" +
                     "Selected Branch: " + branchService.findBranchNameByID(customerOrder.getBranch()) + "<br>" +

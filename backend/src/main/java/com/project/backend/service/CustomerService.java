@@ -116,6 +116,7 @@ public class CustomerService  {
                 byte[] receipt =  paymentService.generateOrderReceipt(newPayment);
                 String attachmentName = "Receipt_"+newPayment.getPaymentNo();
                 orderService.sendOrderReceivedEmail(newOrder,attachmentName,receipt);
+
             }else{
                 orderService.sendOrderReceivedEmail(newOrder);
             }

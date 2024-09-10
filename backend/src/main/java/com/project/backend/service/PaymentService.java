@@ -1,11 +1,11 @@
 package com.project.backend.service;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 import com.project.backend.model.CustomerOrder;
+import com.project.backend.model.OrderItem;
 import com.project.backend.model.Payment;
+import com.project.backend.repository.BranchRepository;
 import com.project.backend.repository.OrderRepository;
 import com.project.backend.repository.PaymentRepository;
 import com.project.backend.repository.UserRepository;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
@@ -43,6 +42,8 @@ public class PaymentService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BranchRepository branchRepository;
 
     public synchronized String generateNextPaymentNo(){
         String lastPaymentNo = paymentRepository.findLastPaymentNo();
@@ -90,7 +91,7 @@ public class PaymentService {
     public byte[] generateOrderReceipt(Payment payment) throws DocumentException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Document document = new Document();
-        PdfWriter.getInstance(document,output);
+        PdfWriter writer =   PdfWriter.getInstance(document,output);
         document.open();
 
         CustomerOrder order = orderRepository.findOrderByBillReference(payment.getReferenceNo());
@@ -112,7 +113,7 @@ public class PaymentService {
         headerTable.addCell(logoCell);
 
         PdfPCell nameCell = new PdfPCell();
-        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
+        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, BaseColor.BLACK);
         Paragraph restaurantName = new Paragraph("ABC Restaurant", titleFont);
         restaurantName.setAlignment(Paragraph.ALIGN_RIGHT);
         restaurantName.setSpacingBefore(10);
@@ -127,38 +128,187 @@ public class PaymentService {
 
         document.add(headerTable);
 
-        Font goldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 25, new BaseColor(166, 144, 3));
+        Font goldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, new BaseColor(166, 144, 3));
         Paragraph orderListTitle = new Paragraph("Receipt", goldFont);
         orderListTitle.setAlignment(Paragraph.ALIGN_CENTER);
         orderListTitle.setSpacingBefore(10);
-        orderListTitle.setSpacingAfter(30);
+        orderListTitle.setSpacingAfter(10);
         document.add(orderListTitle);
 
-        Font detailFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
-        Font itemFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
+        Font paymentReceivedFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
+        Paragraph paymentReceived = new Paragraph("Payment Received", paymentReceivedFont);
+        paymentReceived.setSpacingAfter(10);
+        document.add(paymentReceived);
 
-        document.add(new Paragraph("Bill No: " + payment.getPaymentNo(), detailFont));
-        document.add(new Paragraph("Date & Time: " + payment.getDateTime().format(formatter), detailFont));
-        document.add(new Paragraph("Reference No / Order No: " + payment.getReferenceNo(), detailFont));
+        Font detailFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
+        Font itemFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.BLACK);
 
-        //get customer name
+        PdfPTable infoTable = new PdfPTable(6);
+        infoTable.setWidthPercentage(100);
+        infoTable.setSpacingBefore(10f);
+        infoTable.setSpacingAfter(20f);
+
+        float[] infoColumnWidths = {0.24f,0.02f,0.2f,0.2f,0.02f,0.32f};
+        infoTable.setWidths(infoColumnWidths);
+
+        PdfPCell infoCell = new PdfPCell(new Phrase("Bill No", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+       infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(payment.getPaymentNo(), detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase("Date & Time", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(payment.getDateTime().format(formatter), detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+
+       //get customer Name
         String customer = userService.findUserNameByID(payment.getCustomerId());
-        document.add(new Paragraph("Customer: " + customer, detailFont));
 
-        //get customer email
+        infoCell = new PdfPCell(new Phrase("Reference No / Order No", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(payment.getReferenceNo(), detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase("Customer Name", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(customer, detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+
+        //get branch name and email
+        String branchName = branchRepository.findBranchNameById(order.getBranch());
         String email = userRepository.getUserEmailByID(payment.getCustomerId());
-        document.add(new Paragraph("Email: " + email, detailFont));
 
-        document.add(new Paragraph("Contact No: " + order.getPhone(), detailFont));
+        infoCell = new PdfPCell(new Phrase("Branch", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(branchName, detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase("Email", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(email, detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
 
         //formatting amount
         String amount = decimalFormat.format(payment.getAmount());
-        document.add(new Paragraph("Amount: Rs " + amount, detailFont));
+
+        infoCell = new PdfPCell(new Phrase("Amount", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase("Rs "+amount, detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase("Contact No", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(":", detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        infoCell = new PdfPCell(new Phrase(order.getPhone(), detailFont));
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoTable.addCell(infoCell);
+        document.add(infoTable);
 
         PdfPTable table = new PdfPTable(4);
         table.setWidthPercentage(100);
-        table.setSpacingBefore(50f);
-        table.setSpacingAfter(50f);
+        table.setSpacingBefore(20f);
+        table.setSpacingAfter(20f);
+
+        float[] orderColumnWidths = {0.4f,0.15f,0.2f,0.25f};
+        table.setWidths(orderColumnWidths);
+
+        PdfPCell cell = new PdfPCell(new Phrase("Product Name", itemFont));
+        cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell.setPadding(5f);
+        table.addCell(cell);
+
+
+        cell = new PdfPCell(new Phrase("Qty", itemFont));
+        cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell.setPadding(5f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("Unit Price", itemFont));
+        cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell.setPadding(5f);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("Sub Total", itemFont));
+        cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell.setPadding(5f);
+        table.addCell(cell);
+
+        for (OrderItem items : order.getOrderItems()) {
+
+            cell = new PdfPCell(new Phrase(items.getProductName(), detailFont));
+            cell.setPadding(5f);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(String.valueOf(items.getQuantity()), detailFont));
+            cell.setPadding(5f);
+            table.addCell(cell);
+
+            //formatting into 2 digits
+            String formattedUnitPrice = decimalFormat.format(items.getPrice());
+            String formattedSubTotal = decimalFormat.format(items.getQuantity() * items.getPrice());
+
+            PdfPCell unitPriceCell = new PdfPCell(new Phrase(formattedUnitPrice, detailFont));
+            unitPriceCell.setPadding(5f);
+            unitPriceCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table.addCell(unitPriceCell);
+
+            PdfPCell subTotCell = new PdfPCell(new Phrase(formattedSubTotal, detailFont));
+            subTotCell.setPadding(5f);
+            subTotCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table.addCell(subTotCell);
+        }
+
+        PdfPCell grandTotalCell = new PdfPCell(new Phrase("Grand Total: Rs " +
+                decimalFormat.format(order.getOrderValue()), itemFont));
+        grandTotalCell.setColspan(4);
+        grandTotalCell.setPadding(5f);
+        grandTotalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        table.addCell(grandTotalCell);
+        document.add(table);
+
+        float pageHeight = document.getPageSize().getHeight();
+        float marginBottom = document.bottomMargin();
+
+        Font thankYouFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
+        PdfContentByte canvas = writer.getDirectContent();
+        ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER,
+                new Phrase("Thank you for choosing ABC Restaurant", thankYouFont),
+                (document.right() + document.left()) / 2, marginBottom + 20, 0);
+
         document.close();
         return output.toByteArray();
     }
