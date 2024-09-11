@@ -258,7 +258,7 @@ function Register() {
               </div>
             </div>
             <div className="row d-flex justify-content-center">
-              <div className="col-lg-4 mb-3">
+              <div className="col-lg-4 mb-4">
                 <Form.Group controlId="formBasicBranch">
                   <Form.Label>Closest Branch</Form.Label>
                   <Select
@@ -271,16 +271,15 @@ function Register() {
                   <span className="error-message">{formErrors.branch}</span>
                 </Form.Group>
               </div>
-              <div className="col-lg-4 mb-3"></div>
             </div>
-            <div className="row d-flex justify-content-center align-items-center">
+            <div className="row d-flex justify-content-center align-items-center mb-1">
               <div className="col-lg-4 text-center">
                 <p className="phrase">
                   Already have an Account? <Link to="/login" className="formlink">Login</Link>
                 </p>
               </div>
             </div>
-            <div className="row d-flex justify-content-center mt-2">
+            <div className="row d-flex justify-content-center mb-5">
               <Button
                 variant="secondary"
                 className="btn btn-lg submit"
