@@ -26,7 +26,7 @@ function App() {
       case "Admin":
         return "/admin/adminProducts";
       case "Staff":
-        return "/staff/ordermanage";
+        return "/staff/branchReservations";
       case "Customer":
         return "/customer/customerproducts";
         default:

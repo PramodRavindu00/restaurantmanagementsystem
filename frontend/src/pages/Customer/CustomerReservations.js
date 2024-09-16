@@ -5,6 +5,7 @@ import {
   Container,
   Form,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import Model from "../../components/Model";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -43,6 +44,7 @@ function CustomerReservations() {
   const [count, setCharCount] = useState(150);
   const [show, setShow] = useState(false);
   const [reservations, setReservations] = useState([loggeduser.id]);
+  const [reservationsLoading, setReservationsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -157,6 +159,7 @@ function CustomerReservations() {
     axios
       .get(`/customer/getCustomerReservations/${loggeduser.id}`)
       .then((response) => {
+        setReservationsLoading(false);
         const result = response.data.map((item) => ({
           id: item.id,
           reservationNo: item.reservationNo,
@@ -336,6 +339,13 @@ function CustomerReservations() {
     <Container fluid style={{ margin: "20px 0" }}>
       <Row className="d-flex flex-column flex-lg-row">
         <Col xs={12} lg={12} className="d-flex justify-content-center">
+        {reservationsLoading ? (
+        <div className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
           <Table
             title={null}
             columns={columns}
@@ -347,6 +357,7 @@ function CustomerReservations() {
               </Button>
             }
           />
+        )}
         </Col>
       </Row>
 
@@ -367,6 +378,7 @@ function CustomerReservations() {
                 value={selectedOption}
                 onChange={handleSelectChange}
                 placeholder="Select the branch"
+                isDisabled = {modalAction === "edit"}
               />
               <span className="error-message">{formErrors.branch}</span>
             </Form.Group>

@@ -15,7 +15,7 @@ function Customer() {
       { path: "myorders", name: "Cart & Orders", component: MyOrders },
       { path: "customerReservation", name: "Reservations", component: CustomerReservations },
       { path: "myqueries", name: "Ask ABC", component: CustomerQueries },
-      { path: "profile", name: "Profile", component: MyOrders },
+      // { path: "profile", name: "Profile", component: MyOrders },
     ];
   
     return (

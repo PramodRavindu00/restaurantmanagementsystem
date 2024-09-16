@@ -95,13 +95,16 @@ public class ReservationService {
         }
     }
 
-    public List<Reservation> getAllReservations(){
-        return reservationRepository.findAll();
-    }
+
 
 //    public List<Reservation> getAllReservations(String status){
 //        return reservationRepository.findAllByStatus(status);
 //    }
+
+
+    public List<Reservation> getAllReservations(){
+        return reservationRepository.findAll();
+    }
 
     public List<Reservation> getAllReservations(Long id){
 return reservationRepository.findByBranch(id);

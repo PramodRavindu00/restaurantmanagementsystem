@@ -17,7 +17,7 @@ function Admin() {
     { path: "adminstaff", name: "Staff", component: AdminStaff },
     { path: "adminqueries", name: "Queries", component: AdminQueries },
     { path: "reports", name: "Reports", component: Reports },
-    { path: "profile", name: "Profile", component: AdminProducts },
+    // { path: "profile", name: "Profile", component: AdminProducts },
   ];
 
   return (

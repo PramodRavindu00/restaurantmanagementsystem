@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col,Spinner } from "react-bootstrap";
 import "./../../styles/form.css";
 import Table from "./../../components/Table";
 import Button from "react-bootstrap/Button";
@@ -40,6 +40,7 @@ function AdminStaff() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
   const [show, setShow] = useState(false);
+  const [staffLoading,setStaffloading] = useState(true);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 
@@ -89,6 +90,7 @@ function AdminStaff() {
     axios
       .get("/user/allStaff")
       .then((response) => {
+        setStaffloading(false);
         const result = response.data.map((item) => ({
           id: item.id,
           firstName: item.firstName,
@@ -185,7 +187,12 @@ function AdminStaff() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "phone") {
+      const numericValue = value.replace(/[^0-9]/g, "");
+      setFormValues({ ...formValues, [name]: numericValue.slice(0, 10) });
+    } else {
     setFormValues({ ...formValues, [name]: value });
+    }
   };
 
   const handleAdd = () => {
@@ -376,6 +383,13 @@ function AdminStaff() {
       <Row className="d-flex flex-column flex-lg-row">
         {/* All branches table */}
         <Col xs={12} lg={12} className="d-flex justify-content-center">
+        {staffLoading ? (
+        <div className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
           <Table
             title={null}
             columns={columns}
@@ -387,6 +401,7 @@ function AdminStaff() {
               </Button>
             }
           />
+        )}
         </Col>
       </Row>
 

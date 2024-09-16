@@ -12,7 +12,7 @@ function Staff(){
       { path: "billing", name: "Billing", component: Billing },
       { path: "ordermanage", name: "Orders", component: OrderManage },
       { path: "branchReservations", name: "Reservations", component: BranchReservations },
-      { path: "profile", name: "Profile", component: OrderManage },
+      // { path: "profile", name: "Profile", component: OrderManage },
       
     ];
   
@@ -23,7 +23,7 @@ function Staff(){
         {/* child elements routing */}
         <Routes>    
           {/* if user entered invalid URL redirect to the default page */}
-          <Route path="*" element={<Navigate to="ordermanage" />} />
+          <Route path="*" element={<Navigate to="branchReservations" />} />
           {routes.map(({ path, component: Component }) => (
             <Route key={path} path={path} element={<Component />} />
           ))}

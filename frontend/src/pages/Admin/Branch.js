@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "./../../styles/form.css";
 import Table from "./../../components/Table";
 import Button from "react-bootstrap/Button";
@@ -25,6 +25,7 @@ function Branch() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
   const [show, setShow] = useState(false);
+  const [branchloading,setBranchLoading] = useState(true);
 
   useEffect(() => {
     fetchBranches(); //display all branches
@@ -34,6 +35,7 @@ function Branch() {
     axios
       .get("/branch/allBranch")
       .then((response) => {
+        setBranchLoading(false);
         const result = response.data.map((item) => ({
           id: item.id,
           name: item.name,
@@ -231,6 +233,13 @@ function Branch() {
       <Row className="d-flex flex-column flex-lg-row">
         {/* All branches table */}
         <Col xs={12} lg={12} className="d-flex justify-content-center">
+        {branchloading ? (
+        <div className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
           <Table
             title={null}
             columns={columns}
@@ -242,6 +251,7 @@ function Branch() {
               </Button>
             }
           />
+        )}
         </Col>
       </Row>
 

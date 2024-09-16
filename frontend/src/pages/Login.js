@@ -64,7 +64,7 @@ function Login() {
             if (userType === "Admin") {
               navigate("/admin/adminProducts");
             } else if (userType === "Staff") {
-              navigate("/staff/ordermanage");
+              navigate("/staff/branchReservations");
             } else if (userType === "Customer") {
               navigate("/customer/customerProducts");
             }
@@ -92,8 +92,11 @@ function Login() {
 
   const validate = (values) => {
     const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!values.email) {
       errors.email = "Email is required!";
+    }else if(!emailRegex.test(values.email)){
+      errors.email = "Invalid Email format!";
     }
 
     if (!values.password) {
@@ -123,7 +126,7 @@ function Login() {
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                       <Form.Label>Email address</Form.Label>
                       <Form.Control
-                        type="email"
+                        type="text"
                         placeholder="Enter email"
                         name="email"
                         value={formValues.email}
@@ -165,7 +168,7 @@ function Login() {
                 <div className="row d-flex flex-column justify-content-center">
                   <div className="text-center">
                   <p className="phrase mb-1">
-                      Dont have an Account yet?{" "}
+                      Don't have an Account yet?{" "}
                       <Link to="/register" className="formlink">
                         Register
                       </Link>
@@ -178,7 +181,7 @@ function Login() {
                       Login
                     </Button>
                     <p className="phrase mt-1">
-                      <Link to="/register" className="formlink">
+                      <Link to="/forgotPassword" className="formlink">
                         Forgot Password ?
                       </Link>
                     </p>

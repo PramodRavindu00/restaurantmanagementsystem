@@ -41,7 +41,12 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+    if (name === "phone") {
+      const numericValue = value.replace(/[^0-9]/g, "");
+      setFormValues({ ...formValues, [name]: numericValue.slice(0, 10) });
+    } else {
+      setFormValues({ ...formValues, [name]: value });
+    }
   };
 
   useEffect(() => {
@@ -115,7 +120,7 @@ function Register() {
     if (!values.email) {
       errors.email = "Email is required!";
     } else if (!emailRegex.test(values.email)) {
-      errors.email = "This is not a valid email format!";
+      errors.email = "Invalid Email format!";
     }
     if (!values.phone) {
       errors.phone = "Phone number is required!";
@@ -124,14 +129,14 @@ function Register() {
       errors.branch = "Branch is required!";
     }
     if (!values.password) {
-      errors.password = "Password is required";
+      errors.password = "Password is required!";
     } else if (values.password.length < 4) {
       errors.password = "Password must be more than 4 characters";
     } else if (values.password.length > 10) {
       errors.password = "Password cannot exceed more than 10 characters";
     }
     if (!values.confirm) {
-      errors.confirm = "Confirm password is required";
+      errors.confirm = "Confirm password is required!";
     } else if (values.confirm !== values.password) {
       errors.confirm = "Passwords do not match";
     }
@@ -162,7 +167,7 @@ function Register() {
                     value={formValues.firstName}
                     onChange={handleChange}
                   />
-                  <span className="error-message">{formErrors.firstName}</span>
+                  <span className="error-message firstName">{formErrors.firstName}</span>
                 </Form.Group>
               </div>
               <div className="col-lg-4 mb-3">
@@ -175,7 +180,7 @@ function Register() {
                     value={formValues.lastName}
                     onChange={handleChange}
                   />
-                  <span className="error-message">{formErrors.lastName}</span>
+                  <span className="error-message lastName">{formErrors.lastName}</span>
                 </Form.Group>
               </div>
             </div>
@@ -185,13 +190,13 @@ function Register() {
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
-                    type="email"
+                    type="text"
                     placeholder="Enter email"
                     name="email"
                     value={formValues.email}
                     onChange={handleChange}
                   />
-                  <span className="error-message">{formErrors.email}</span>
+                  <span className="error-message email">{formErrors.email}</span>
                 </Form.Group>
               </div>
               <div className="col-lg-4 mb-3">
@@ -204,7 +209,7 @@ function Register() {
                     value={formValues.phone}
                     onChange={handleChange}
                   />
-                  <span className="error-message">{formErrors.phone}</span>
+                  <span className="error-message phone">{formErrors.phone}</span>
                 </Form.Group>
               </div>
             </div>
@@ -230,7 +235,7 @@ function Register() {
                       />
                     </Button>
                   </div>
-                  <span className="error-message">{formErrors.password}</span>
+                  <span className="error-message password">{formErrors.password}</span>
                 </Form.Group>
               </div>
               <div className="col-lg-4 mb-3">
@@ -253,7 +258,7 @@ function Register() {
                       />
                     </Button>
                   </div>
-                  <span className="error-message">{formErrors.confirm}</span>
+                  <span className="error-message confirm">{formErrors.confirm}</span>
                 </Form.Group>
               </div>
             </div>
@@ -262,24 +267,18 @@ function Register() {
                 <Form.Group controlId="formBasicBranch">
                   <Form.Label>Closest Branch</Form.Label>
                   <Select
+                  id="branch"
                     name="branch"
                     options={branchOptions}
                     value={selectedOption}
                     onChange={handleSelectChange}
                     placeholder="Select the branch"
                   />
-                  <span className="error-message">{formErrors.branch}</span>
+                  <span className="error-message branch">{formErrors.branch}</span>
                 </Form.Group>
               </div>
             </div>
-            <div className="row d-flex justify-content-center align-items-center mb-1">
-              <div className="col-lg-4 text-center">
-                <p className="phrase">
-                  Already have an Account? <Link to="/login" className="formlink">Login</Link>
-                </p>
-              </div>
-            </div>
-            <div className="row d-flex justify-content-center mb-5">
+            <div className="row d-flex justify-content-center mb-1">
               <Button
                 variant="secondary"
                 className="btn btn-lg submit"
@@ -287,6 +286,16 @@ function Register() {
               >
                 Register
               </Button>
+            </div>
+            <div className="row d-flex justify-content-center align-items-center mb-5">
+              <div className="col-lg-4 text-center">
+                <p className="phrase">
+                  Already have an Account?{" "}
+                  <Link to="/login" className="formlink">
+                    Login
+                  </Link>
+                </p>
+              </div>
             </div>
           </Form>
         </div>
