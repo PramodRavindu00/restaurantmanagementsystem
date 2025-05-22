@@ -5,9 +5,7 @@
 #Table of Contents
 
 - [Features](#features)
-- [Screenshots](#screenshots)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Technologies Used](#technologies-used)
   
 ---
@@ -25,7 +23,8 @@
 - recieving email regarding reservations updates, order payement invoices based on payment method
 
 ## Installation
-clone the repo or download the project as ZIP - git clone https://github.com/PramodRavindu00/restaurantmanagementsystem.git (bash)
+clone the repo or download the project as ZIP
+- git clone https://github.com/PramodRavindu00/restaurantmanagementsystem.git (bash)
 
 # Navigate to the project folder
 cd restaurantmanagementsystem
@@ -33,29 +32,29 @@ cd restaurantmanagementsystem
 ## Environment Variables
 
 Create a `.env` file in the root directory of the **backend** folder. Below are the environment variables you need to set:
-user - MySQL database server username
-password - database server password
-database - name of the newly created database (create a MySQL database it not created already)
-Email - app email
-Email_Password - app email's app password
+- user - MySQL database server username
+- password - database server password
+- database - name of the newly created database (create a MySQL database it not created already)
+- Email - app email
+- Email_Password - app email's app password
 
 # Install backend dependencies
 cd backend
-run the main file untill project got synced and downloaded the dependencies
+- run the main file untill project got synced and downloaded the dependencies
 
 # Install frontend dependencies
 cd ../frontend
-npm install
+- npm install
 
 # Start backend server
-run the main file
+- run the main file
 
 # Start frontend server
 cd ../frontend
-npm start
+- npm start
 
 # Technologies Used
-Frontend: React + React Bootstrap
-Backend: SpringBoot
-Database: MySQL
-Others: JWT, dotenv, axios
+- Frontend: React + React Bootstrap
+- Backend: SpringBoot
+- Database: MySQL
+- Others: JWT, dotenv, axios
